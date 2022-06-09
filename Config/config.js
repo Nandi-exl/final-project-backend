@@ -96,32 +96,29 @@ const Foods = sequelize.define(
   }
 );
 
-// const Beverages = sequelize.define(
-//   'beverages',
-//   {
-//     id: {
-//       type: Sequelize.INTEGER,
-//       autoIncrement: true,
-//       primaryKey: true,
-//     },
-//     beverageName: {
-//       type: Sequelize.STRING,
-//       allowNull: false,
-//     },
-//     description: {
-//       type: Sequelize.STRING,
-//       allowNull: false,
-//     },
-//     category_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'category',
-//         key: 'id',
-//       },
-//     },
-//   },
-//   { freezeTableName: true }
-// );
+const Beverages = sequelize.define(
+  'beverages',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    beverageName: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    categoryId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  { freezeTableName: true }
+);
 
 const FoodImages = sequelize.define(
   'foodImages',
@@ -142,69 +139,24 @@ const FoodImages = sequelize.define(
   { freezeTableName: true }
 );
 
-// const BeverageImages = sequelize.define(
-//   'beverageImages',
-//   {
-//     id: {
-//       type: Sequelize.INTEGER,
-//       primaryKey: true,
-//       autoIncrement: true,
-//     },
-//     image: {
-//       type: Sequelize.STRING,
-//     },
-//     beverage_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'beverages',
-//         key: 'id',
-//       },
-//     },
-//   },
-//   { freezeTableName: true }
-// );
-
-// const FoodCategoryConnection = sequelize.define(
-//   'food_category_connection',
-//   {
-//     food_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'foods',
-//         key: 'id',
-//       },
-//     },
-//     category_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'category',
-//         key: 'id',
-//       },
-//     },
-//   },
-//   { freezeTableName: true }
-// );
-
-// const BeverageCategoryConnection = sequelize.define(
-//   'beverage_category_connection',
-//   {
-//     beverage_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'beverages',
-//         key: 'id',
-//       },
-//     },
-//     category_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'category',
-//         key: 'id',
-//       },
-//     },
-//   },
-//   { freezeTableName: true }
-// );
+const BeverageImages = sequelize.define(
+  'beverageImages',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    image: {
+      type: Sequelize.STRING,
+    },
+    beverageId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  { freezeTableName: true }
+);
 
 // const FoodFavorite = sequelize.define(
 //   'food_favorite',
@@ -258,15 +210,25 @@ const FoodImages = sequelize.define(
 //   { freezeTableName: true }
 // );
 
-//Association
+/*Association TABLE RELATION*/
 //foods with category
 Category.hasMany(Foods);
 Foods.belongsTo(Category);
 
 //foodswith image
 Foods.hasMany(FoodImages);
-FoodImages.belongsTo(Foods)
+FoodImages.belongsTo(Foods);
 
+//beverage with category
+Category.hasMany(Beverages);
+Beverages.belongsTo(Category);
+
+//beverage with image
+Beverages.hasMany(BeverageImages);
+BeverageImages.belongsTo(Beverages);
+
+
+/* UNCOMMENT UNTUK MEMBUAT TABLE PADA DATABASE */
 // sequelize
 //   .sync({ force: false })
 //   .then(() => {
@@ -282,10 +244,8 @@ module.exports = {
   Category,
   Foods,
   FoodImages,
-  // FoodCategoryConnection,
   // FoodFavorite,
-  // Beverages,
-  // BeverageImages,
-  // BeverageCategoryConnection,
+  Beverages,
+  BeverageImages,
   // BeverageFavorite,
 };

@@ -2,7 +2,6 @@ const {
   Foods,
   FoodImages,
   // FoodFavorite,
-  // FoodCategoryConnection,
   Category,
 } = require('../../Config/config');
 

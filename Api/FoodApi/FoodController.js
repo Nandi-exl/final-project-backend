@@ -1,5 +1,5 @@
 const FoodModel = require('./FoodModel');
-const { uploadFile, getFileStream } = require('../../s3');
+const { uploadFile, getFileStream } = require('../../MIddleware/AwsBucket/s3');
 
 class FoodController {
   static async AddCategory(req, res) {
@@ -8,7 +8,7 @@ class FoodController {
     res.status(201).json(result);
   }
 
-  static async AddFood(req, res, next) {
+  static async AddFood(req, res) {
     const data = req.body;
     let category = req.body.categoryId;
 

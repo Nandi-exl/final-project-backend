@@ -7,7 +7,7 @@ const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-// const BeverageRouter = require('./BeverageApi/BeverageRouter');
+const beverageRouter = require('./Api/BeverageApi/BeverageRouter');
 const foodRouter = require('./Api/FoodApi/FoodRouter');
 
 app.use(bodyParser.json());
@@ -21,7 +21,7 @@ app.use(
   })
 );
 
-// app.use('/', BeverageRouter);
+app.use('/', beverageRouter);
 app.use('/', foodRouter);
 
 const PORT = process.env.PORT || 5000;
