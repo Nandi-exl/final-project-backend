@@ -1,5 +1,10 @@
 const FoodModel = require('./FoodModel');
-const { uploadFile, getFileStream } = require('../../MIddleware/AwsBucket/s3');
+const {
+  uploadFile,
+  getFileStream,
+  deleteFile,
+} = require('../../MIddleware/AwsBucket/s3');
+const { Foods } = require('../../Config/config');
 
 class FoodController {
   static async AddCategory(req, res) {
@@ -22,7 +27,7 @@ class FoodController {
     const result = await FoodModel.AddFood(data, category);
 
     if (result) {
-      const res = await uploadFile(req.files);
+      uploadFile(req.files);
       const img = req.files.map((file) => file.filename);
 
       //loop so it will excute the image more than once
@@ -52,6 +57,50 @@ class FoodController {
     const readStream = getFileStream(image);
     //note do not use res.status here it will impact the image result
     readStream.pipe(res);
+  }
+
+  static async GetFoodByCategory(req, res) {
+    const id = req.params.id;
+    const result = await FoodModel.GetAllFoodByCategory(id);
+    res.status(200).json(result);
+  }
+
+  static async GetImage(req, res) {
+    const foodId = req.params.foodId;
+    const result = await FoodModel.GetImage(foodId);
+    res.status(200).json(result);
+  }
+
+  static async DeleteFood(req, res) {
+    const key = req.params.id;
+    const image = [];
+    const fileKey = await FoodModel.GetImage(key);
+    fileKey.map((img) => {
+      image.push(img.image.slice(29));
+    });
+
+    for (let i = 0; i < image.length; i++) {
+      await deleteFile(image[i]);
+    }
+
+    await FoodModel.DeleteFood(key);
+    res.status(200).json({ msg: `file is deleted` });
+  }
+
+  static async AddFavoriteFood(req, res) {
+    const id = req.params.foodId;
+    const food = await FoodModel.GetFood(id);
+    const foodId = food[0].dataValues.id;
+    if (food) {
+      await FoodModel.AddToFavoriteFood(foodId);
+    }
+    res.status(203).json({ msg: `${food.foodName} is added to favorite` });
+  }
+
+  static async GetFavFood(req, res) {
+    const foodId = req.params.foodId
+    const getFavFood = await FoodModel.GetFavFood(foodId)
+    res.status(200).json(getFavFood)
   }
 }
 

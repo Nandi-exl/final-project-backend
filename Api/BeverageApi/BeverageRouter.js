@@ -11,4 +11,5 @@ beverageRouter.post(
 beverageRouter.get('/beverage', BeverageController.GetAllBeverages);
 beverageRouter.get('/beverage/:id', BeverageController.GetBeverage);
 beverageRouter.get('/images/:image', BeverageController.GetBeverageImages);
+beverageRouter.get('/beverage/category/:id', BeverageController.GetBeverageByCategory)
 module.exports = beverageRouter;

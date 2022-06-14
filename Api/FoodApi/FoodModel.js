@@ -1,7 +1,7 @@
 const {
   Foods,
   FoodImages,
-  // FoodFavorite,
+  FoodFavorite,
   Category,
 } = require('../../Config/config');
 
@@ -96,6 +96,109 @@ class FoodModel {
       } catch (error) {
         rej(error);
       }
+    });
+  }
+
+  static async GetAllFoodByCategory(id) {
+    const getFood = await Foods.findAll({
+      attributes: ['id', 'foodName', 'description'],
+      include: [
+        {
+          model: Category,
+          attributes: ['category'],
+          where: {
+            id: id,
+          },
+        },
+        {
+          model: FoodImages,
+          attributes: ['id', 'image'],
+        },
+      ],
+    });
+
+    return new Promise((res, rej) => {
+      try {
+        res(getFood);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
+  static async GetImage(foodId) {
+    const getImage = await FoodImages.findAll({
+      attributes: ['image'],
+      where: {
+        foodId: foodId,
+      },
+    });
+
+    return new Promise((res, rej) => {
+      try {
+        res(getImage);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
+  static async DeleteFood(id) {
+    const delFood = await Foods.destroy({
+      where: {
+        id: id,
+      },
+    }).then(async () => {
+      await FoodImages.destroy({
+        where: {
+          foodId: id,
+        },
+      });
+    });
+
+    return new Promise((res, rej) => {
+      try {
+        res(delFood);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
+  static async AddToFavoriteFood(foodId) {
+    const addFavFood = await FoodFavorite.create({
+      foodId: foodId,
+    });
+
+    return new Promise((res, rej) => {
+      try {
+        res(addFavFood);
+      } catch (error) {
+        rej(error);
+        console.log('error adding favorite food', error);
+      }
+    });
+  }
+
+  static async GetFavFood(foodId) {
+    const getAllFavFood = await Foods.findAll({
+      attributes: ['id', 'foodName', 'description'],
+      include: [
+        {
+          model: Category,
+          attributes: ['category'],
+        },
+        {
+          model: FoodImages,
+          attributes: ['id', 'image'],
+        },
+        {
+          model: FoodFavorite,
+          where: {
+            foodId: foodId,
+          },
+        },
+      ],
     });
   }
 }

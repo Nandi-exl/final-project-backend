@@ -1,5 +1,6 @@
 require('dotenv').config();
 const S3 = require('aws-sdk/clients/s3');
+const { error } = require('console');
 const fs = require('fs');
 
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -40,3 +41,25 @@ function getFileStream(fileKey) {
   return s3.getObject(downloadParams).createReadStream();
 }
 exports.getFileStream = getFileStream;
+
+//delete file from bucket
+async function deleteFile(filename) {
+  const params = {
+    Bucket: bucketName,
+    Key: filename,
+  };
+
+  try {
+    await s3.headObject(params).promise();
+    console.log('File Found in S3');
+    try {
+      await s3.deleteObject(params).promise();
+      console.log('file deleted Successfully');
+    } catch (err) {
+      console.log('ERROR in file Deleting : ' + JSON.stringify(err));
+    }
+  } catch (err) {
+    console.log('File not Found ERROR : ' + err.code);
+  }
+}
+exports.deleteFile = deleteFile;

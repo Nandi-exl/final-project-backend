@@ -14,8 +14,8 @@ class BeverageController {
     const result = await BeverageModel.AddBeverage(data, category);
 
     if (result) {
-      const res = await uploadFile(req.files);
-      const img = req.files.map((file) => file.filename);
+      uploadFile(req.files);
+      const img = req.files.map((file) => file.filename); //img = [more key tu upload to db]
 
       //loop so it will excute the image more than once
       for (let i = 0; i < img.length; i++) {
@@ -44,6 +44,13 @@ class BeverageController {
     const readStream = getFileStream(image);
     //note do not use res.status here it will impact the image result
     readStream.pipe(res);
+  }
+
+
+  static async GetBeverageByCategory(req, res){
+    const id = req.params.id
+    const result = await BeverageModel.GetBeverageByCategory(id)
+    res.status(200).json(result)
   }
 }
 

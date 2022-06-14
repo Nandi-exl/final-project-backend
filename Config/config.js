@@ -16,43 +16,36 @@ const sequelize = require('./db');
 //   { freezeTableName: true }
 // );
 
-// const Users = sequelize.define(
-//   'users',
-//   {
-//     id: {
-//       type: Sequelize.INTEGER,
-//       allowNull: false,
-//       autoIncrement: true,
-//       primaryKey: true,
-//     },
-//     name: {
-//       type: Sequelize.STRING,
-//       allowNull: false,
-//     },
-//     email: {
-//       type: Sequelize.STRING,
-//       allowNull: false,
-//     },
-//     password: {
-//       type: Sequelize.TEXT,
-//       allowNull: false,
-//     },
-//     refreshToken: {
-//       type: Sequelize.TEXT,
-//       allowNull: true,
-//     },
-//     role_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'role',
-//         key: 'id',
-//       },
-//     },
-//   },
-//   {
-//     freezeTableName: true,
-//   }
-// );
+const Users = sequelize.define(
+  'users',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    password: {
+      type: Sequelize.TEXT,
+      allowNull: false,
+    },
+    refreshToken: {
+      type: Sequelize.TEXT,
+      allowNull: true,
+    },
+  },
+  {
+    freezeTableName: true,
+  }
+);
 
 const Category = sequelize.define(
   'category',
@@ -158,31 +151,21 @@ const BeverageImages = sequelize.define(
   { freezeTableName: true }
 );
 
-// const FoodFavorite = sequelize.define(
-//   'food_favorite',
-//   {
-//     id: {
-//       type: Sequelize.INTEGER,
-//       primaryKey: true,
-//       autoIncrement: true,
-//     },
-//     user_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'users',
-//         key: 'id',
-//       },
-//     },
-//     food_id: {
-//       type: Sequelize.INTEGER,
-//       references: {
-//         model: 'foods',
-//         key: 'id',
-//       },
-//     },
-//   },
-//   { freezeTableName: true }
-// );
+const FoodFavorite = sequelize.define(
+  'food_favorite',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    foodId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  { freezeTableName: true }
+);
 
 // const BeverageFavorite = sequelize.define(
 //   'beverage_favorite',
@@ -219,6 +202,10 @@ Foods.belongsTo(Category);
 Foods.hasMany(FoodImages);
 FoodImages.belongsTo(Foods);
 
+//Foods with FavoriteFood
+Foods.hasMany(FoodFavorite);
+FoodFavorite.belongsTo(Foods);
+
 //beverage with category
 Category.hasMany(Beverages);
 Beverages.belongsTo(Category);
@@ -227,8 +214,7 @@ Beverages.belongsTo(Category);
 Beverages.hasMany(BeverageImages);
 BeverageImages.belongsTo(Beverages);
 
-
-/* UNCOMMENT UNTUK MEMBUAT TABLE PADA DATABASE */
+/* UNCOMMENT SETIAP SUDAH MEMBUAT TABLE PADA DATABASE */
 // sequelize
 //   .sync({ force: false })
 //   .then(() => {
@@ -244,7 +230,7 @@ module.exports = {
   Category,
   Foods,
   FoodImages,
-  // FoodFavorite,
+  FoodFavorite,
   Beverages,
   BeverageImages,
   // BeverageFavorite,

@@ -80,6 +80,33 @@ class BeverageModel {
       }
     });
   }
+
+  static async GetBeverageByCategory(id) {
+    const getBeverage = await Beverages.findAll({
+      attributes: ['id', 'beverageName', 'description'],
+      include: [
+        {
+          model: Category,
+          attributes: ['category'],
+          where: {
+            id: id,
+          },
+        },
+        {
+          model: BeverageImages,
+          attributes: ['id', 'image'],
+        },
+      ],
+    });
+
+    return new Promise((res, rej) => {
+      try {
+        res(getBeverage);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
 }
 
 module.exports = BeverageModel;
