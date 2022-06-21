@@ -8,10 +8,14 @@ foodRouter.post('/add-food', upload.array('images', 4), FoodController.AddFood);
 foodRouter.get('/food', FoodController.GetAllFood);
 foodRouter.get('/food/:id', FoodController.GetFood);
 foodRouter.get('/images/:image', FoodController.GetFoodImages);
-foodRouter.get('/food/category/:id', FoodController.GetFoodByCategory);
+foodRouter.get('/food/category/:category', FoodController.GetFoodByCategory);
 // foodRouter.get('/foodImage/:foodId', FoodController.GetImage) // get image from database
 foodRouter.delete('/delete/:id', FoodController.DeleteFood);
 
-foodRouter.post('/add_to_favorite_food/:foodId', FoodController.AddFavoriteFood)
+foodRouter.post(
+  '/add_to_favorite_food/:foodId',
+  FoodController.AddFavoriteFood
+);
+foodRouter.get('/food/favorite/:userId', FoodController.GetFavFood);
 
 module.exports = foodRouter;

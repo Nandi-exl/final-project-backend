@@ -3,6 +3,7 @@ const {
   FoodImages,
   FoodFavorite,
   Category,
+  Users,
 } = require('../../Config/config');
 
 class FoodModel {
@@ -16,7 +17,7 @@ class FoodModel {
         },
         {
           model: FoodImages,
-          attributes: ['id', 'image'],
+          attributes: ['id', 'image', 'publicId'],
         },
       ],
     });
@@ -82,7 +83,7 @@ class FoodModel {
         },
         {
           model: FoodImages,
-          attributes: ['id', 'image'],
+          attributes: ['id', 'image', 'publicId'],
         },
       ],
       where: {
@@ -99,7 +100,7 @@ class FoodModel {
     });
   }
 
-  static async GetAllFoodByCategory(id) {
+  static async GetAllFoodByCategory(category) {
     const getFood = await Foods.findAll({
       attributes: ['id', 'foodName', 'description'],
       include: [
@@ -107,12 +108,12 @@ class FoodModel {
           model: Category,
           attributes: ['category'],
           where: {
-            id: id,
+            category: category,
           },
         },
         {
           model: FoodImages,
-          attributes: ['id', 'image'],
+          attributes: ['id', 'image', 'publicId'],
         },
       ],
     });
@@ -165,9 +166,10 @@ class FoodModel {
     });
   }
 
-  static async AddToFavoriteFood(foodId) {
+  static async AddToFavoriteFood(foodId, userId) {
     const addFavFood = await FoodFavorite.create({
       foodId: foodId,
+      userId: userId,
     });
 
     return new Promise((res, rej) => {
@@ -180,25 +182,36 @@ class FoodModel {
     });
   }
 
-  static async GetFavFood(foodId) {
-    const getAllFavFood = await Foods.findAll({
-      attributes: ['id', 'foodName', 'description'],
-      include: [
-        {
+  static async GetFavFood(userId) {
+    const getFavFoods = await FoodFavorite.findAll({
+      attributes: [''],
+      include: {
+        model: Foods,
+        attributes: ['id', 'foodName', 'description'],
+        include: {
           model: Category,
           attributes: ['category'],
         },
-        {
+        include: {
           model: FoodImages,
-          attributes: ['id', 'image'],
+          attributes: ['id', 'image', 'publicId'],
         },
-        {
-          model: FoodFavorite,
-          where: {
-            foodId: foodId,
-          },
+      },
+      include: {
+        model: Users,
+        attributes: ['id', 'name'],
+        where: {
+          id: userId,
         },
-      ],
+      },
+    });
+
+    return new Promise((res, rej) => {
+      try {
+        res(getFavFoods);
+      } catch (error) {
+        rej(error);
+      }
     });
   }
 }

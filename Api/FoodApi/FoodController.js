@@ -1,10 +1,12 @@
 const FoodModel = require('./FoodModel');
+const UserModel = require('../UserApi/UserModel');
 const {
   uploadFile,
   getFileStream,
   deleteFile,
 } = require('../../MIddleware/AwsBucket/s3');
-const { Foods } = require('../../Config/config');
+
+const { uploadImages } = require('../../MIddleware/cloudinary/cloudinary');
 
 class FoodController {
   static async AddCategory(req, res) {
@@ -27,16 +29,32 @@ class FoodController {
     const result = await FoodModel.AddFood(data, category);
 
     if (result) {
-      uploadFile(req.files);
+      //s3 upload file
+      // uploadFile(req.files);
       const img = req.files.map((file) => file.filename);
 
-      //loop so it will excute the image more than once
-      for (let i = 0; i < img.length; i++) {
-        await FoodModel.AddFoodImages(
-          `http://localhost:5000/images/${img[i]}`,
-          result.id
-        );
+      //cloudinary
+      const addImage = [];
+      let dt;
+      const imgPath = req.files.map((file) => file.path);
+      for (let i = 0; i < imgPath.length; i++) {
+        dt = await uploadImages(imgPath[i]);
+        addImage.push(FoodModel.AddFoodImages(dt.url, result.id));
       }
+      await Promise.all(addImage);
+
+      //S3 Bucket AWS
+      //store the image first then push it only once s3
+      // const addImage = [];
+      // for (let i = 0; i < img.length; i++) {
+      //   addImage.push(
+      //     FoodModel.AddFoodImages(
+      //       `http://localhost:5000/images/${img[i]}`,
+      //       result.id
+      //     )
+      //   );
+      // }
+      // await Promise.all(addImage);
     }
     res.status(201).json({ msg: 'food added successful' });
   }
@@ -60,8 +78,8 @@ class FoodController {
   }
 
   static async GetFoodByCategory(req, res) {
-    const id = req.params.id;
-    const result = await FoodModel.GetAllFoodByCategory(id);
+    const category = req.params.category;
+    const result = await FoodModel.GetAllFoodByCategory(category);
     res.status(200).json(result);
   }
 
@@ -98,9 +116,9 @@ class FoodController {
   }
 
   static async GetFavFood(req, res) {
-    const foodId = req.params.foodId
-    const getFavFood = await FoodModel.GetFavFood(foodId)
-    res.status(200).json(getFavFood)
+    const userId = req.params.userId;
+    const getFavFood = await FoodModel.GetFavFood(userId);
+    res.status(200).json(getFavFood);
   }
 }
 

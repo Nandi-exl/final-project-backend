@@ -119,10 +119,14 @@ const FoodImages = sequelize.define(
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
+      autoIncrement: true, 
     },
     image: {
       type: Sequelize.STRING,
+    },
+    //if using cloudinary need publicId to delete image
+    publicId : {
+      type : Sequelize.STRING
     },
     foodId: {
       type: Sequelize.INTEGER,
@@ -143,6 +147,9 @@ const BeverageImages = sequelize.define(
     image: {
       type: Sequelize.STRING,
     },
+    publicId: {
+      type: Sequelize.STRING,
+    },
     beverageId: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -158,6 +165,10 @@ const FoodFavorite = sequelize.define(
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    userId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
     foodId: {
       type: Sequelize.INTEGER,
@@ -175,14 +186,14 @@ const FoodFavorite = sequelize.define(
 //       primaryKey: true,
 //       autoIncrement: true,
 //     },
-//     user_id: {
+//     userId: {
 //       type: Sequelize.INTEGER,
 //       references: {
 //         model: 'users',
 //         key: 'id',
 //       },
 //     },
-//     beverage_id: {
+//     beverageId: {
 //       type: Sequelize.INTEGER,
 //       references: {
 //         model: 'beverages',
@@ -206,6 +217,10 @@ FoodImages.belongsTo(Foods);
 Foods.hasMany(FoodFavorite);
 FoodFavorite.belongsTo(Foods);
 
+//UserWith FavoriteFood
+Users.hasMany(FoodFavorite);
+FoodFavorite.belongsTo(Users);
+
 //beverage with category
 Category.hasMany(Beverages);
 Beverages.belongsTo(Category);
@@ -216,7 +231,7 @@ BeverageImages.belongsTo(Beverages);
 
 /* UNCOMMENT SETIAP SUDAH MEMBUAT TABLE PADA DATABASE */
 // sequelize
-//   .sync({ force: false })
+//   .sync({ force: true })
 //   .then(() => {
 //     console.log('database created');
 //   })
@@ -226,7 +241,7 @@ BeverageImages.belongsTo(Beverages);
 
 module.exports = {
   // Role,
-  // Users,
+  Users,
   Category,
   Foods,
   FoodImages,

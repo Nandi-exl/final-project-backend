@@ -13,6 +13,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
+  
+  //filetring Image
+  // fileFilter: (req, file, cb) => {
+  //   let ext = path.extname(file.originalname);
+  //   if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+  //     cb(new Error('File type is not supported'), false);
+  //     return;
+  //   }
+  //   cb(null, true);
+  // },
 });
 
 module.exports = {

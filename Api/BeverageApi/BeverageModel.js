@@ -81,7 +81,7 @@ class BeverageModel {
     });
   }
 
-  static async GetBeverageByCategory(id) {
+  static async GetBeverageByCategory(category) {
     const getBeverage = await Beverages.findAll({
       attributes: ['id', 'beverageName', 'description'],
       include: [
@@ -89,7 +89,7 @@ class BeverageModel {
           model: Category,
           attributes: ['category'],
           where: {
-            id: id,
+            category: category,
           },
         },
         {

@@ -48,8 +48,8 @@ class BeverageController {
 
 
   static async GetBeverageByCategory(req, res){
-    const id = req.params.id
-    const result = await BeverageModel.GetBeverageByCategory(id)
+    const category = req.params.category;
+    const result = await BeverageModel.GetBeverageByCategory(category);
     res.status(200).json(result)
   }
 }
